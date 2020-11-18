@@ -181,31 +181,32 @@ module.exports = {
         try{
             const Id = req.body.Id.trim().toLowerCase()
             const Data = req.body.data
-            console.log(req.body)
-            //delete already existing music data
-            //await UserModel.findOneAndUpdate({ _id: Id }, { $set: {musicsList : []} })
-
             const userInfo = await UserModel.findById(Id)
+            var dataLength = Data.length
 
-            // await Data.forEach( data =>{
-            //     const movieData = new MediaModel ({
-            //         _id: new mongoose.Types.ObjectId(),
-            //         kind: data.kind,
-            //         TrackName: data.trackName,
-            //         releaseDate: data.releaseDate,
-            //         artistName: data.artistName,
-            //         image : data.image,
-            //         previewUrl: data.previewUrl,
-            //         collectionId:data.collectionId,
-            //         trackId: data.trackId,
-            //         collectionName: data.collectionName,
-            //         ranking:data.ranking,
-            //         creator: userInfo
-            //     })
+            //save the updated media to user table
+            for(var i = 0; i < dataLength;i++){
+                  const data = Data[i]
+                  const movieData = {
+                    _id: new mongoose.Types.ObjectId(),
+                    kind: data.kind,
+                    TrackName: data.trackName,
+                    releaseDate: data.releaseDate,
+                    artistName: data.artistName,
+                    image : data.image,
+                    previewUrl: data.previewUrl,
+                    collectionId:data.collectionId,
+                    trackId: data.trackId,
+                    collectionName: data.collectionName,
+                    ranking:data.ranking,
+                    creator: userInfo
+                }
+                await userInfo.musicsList.push(movieData)
+                const updateMediaTable = new MediaModel(movieData)
+                await updateMediaTable.save()
+                //await userInfo.save()
+            }   
 
-            //     userInfo.musicsList.push(movieData)
-            //     movieData.save()
-            // })
 
             const savedUserInfo = await userInfo.save()
 
@@ -224,31 +225,12 @@ module.exports = {
         try{
             const Id = req.body.Id.trim().toLowerCase()
             const Data = req.body.data
-            console.log(req.body)
             const userInfo = await UserModel.findById(Id)
 
-        //      Data.forEach( data =>{
-        //        const movieData = new MediaModel ({
-        //            _id: new mongoose.Types.ObjectId(),
-        //            kind: data.kind,
-        //            TrackName: data.trackName,
-        //            releaseDate: data.releaseDate,
-        //            artistName: data.artistName,
-        //            image : data.image,
-        //            previewUrl: data.previewUrl,
-        //            collectionId:data.collectionId,
-        //            trackId: data.trackId,
-        //            collectionName: data.collectionName,
-        //            ranking:data.ranking,
-        //            creator: userInfo
-        //        })
-
-        //        userInfo.moviesList.push(movieData)
-        //        movieData.save()
-        //    })
-
-           for (var i = 0; i < images.count; i++) {
-                const movieData = new MediaModel ({
+           var dataLength = Data.length
+           for (var i = 0; i < dataLength; i++) {
+                const data = Data[i]
+                const movieData = {
                     _id: new mongoose.Types.ObjectId(),
                     kind: data.kind,
                     TrackName: data.trackName,
@@ -261,10 +243,12 @@ module.exports = {
                     collectionName: data.collectionName,
                     ranking:data.ranking,
                     creator: userInfo
-                })
+                }
             
-                userInfo.moviesList.push(movieData)
-                movieData.save()
+                await userInfo.moviesList.push(movieData)
+                const updateMediaTable = new MediaModel(movieData)
+                await updateMediaTable.save()
+                //movieData.save()
            }
           
            const savedUserInfo = await userInfo.save()
@@ -281,7 +265,6 @@ module.exports = {
     },
     emptyMedia: async (req, res) => {
        try{
-           console.log(req.body)
            const Id = req.body.Id.trim().toLowerCase()
            if(req.body.location === 'musicsList'){
                 await UserModel.findOneAndUpdate({ _id: Id }, { $set: {musicsList : []} })
