@@ -5,15 +5,18 @@ const mongoose = require('mongoose')
 module.exports = {
     loginUser: async (req, res) => {
         try {
-          const emailAddress = req.body.email.trim().toLowerCase()
+          const userName = req.body.userName.trim().toLowerCase()
           const passWord = req.body.password.trim()
-         
-          const user = await UserModel.findOne({ email: emailAddress, password: passWord })
+          const user = await UserModel.findOne({ userName, passWord }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
           if (user) {
-            await UserModel.findOneAndUpdate({ email: emailAddress }, { $set: { lastLoginDate: new Date() } })
+            //await UserModel.findOneAndUpdate({ email: emailAddress }, { $set: { lastLoginDate: new Date() } })
             res.status(200).json({
               user: user
             })
+          }else{
+            res.status(504).json({
+                user: []
+              })
           }
         } catch (err) {
           res.status(204).json({
@@ -25,14 +28,15 @@ module.exports = {
         try {
           const newUser = new UserModel({
             _id: new mongoose.Types.ObjectId(),
-            emailAddress: req.body.emailAddress,
+            emailAddress: req.body.email,
             userName: req.body.userName,
-            passWord: req.body.passWord
+            passWord: req.body.password
           })
           const user = await newUser.save()
           if (user) {
             res.status(200).json({
-              message: 'added successfully'
+              message: 'added successfully',
+              user
             })
           }
         } catch (e) {
@@ -51,6 +55,20 @@ module.exports = {
         const Id = req.params.Id.trim().toLowerCase()
         try{
             const User = await UserModel.find({ _id: Id }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
+            res.status(200).json({
+                User
+            })
+        }catch(e){
+            console.log(e)
+        }
+       
+    },
+    searchUsers: async (req, res) => {
+        const name = req.body.searchName
+        console.log(req.body)
+        
+        try{
+            const User = await UserModel.find({ userName: { $regex: name, $options: "i" }}).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
             res.status(200).json({
                 User
             })

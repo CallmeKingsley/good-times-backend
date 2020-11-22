@@ -4,6 +4,7 @@ const controller = require('../Controllers').userController
 
 router.post('/addUser', controller.addUser)
 router.get('/getUsers', controller.getUsers)
+router.post('/searchUsers', controller.searchUsers)
 router.get('/getUser/:Id', controller.getUser)
 router.post('/logout', controller.logOut)
 router.post('/setMovie', controller.setMovie)
