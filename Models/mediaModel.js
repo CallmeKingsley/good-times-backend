@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const mediaSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
   kind: String,
-  TrackName: String,
+  trackName: String,
   releaseDate: String,
   artistName: String,
   image: String,
