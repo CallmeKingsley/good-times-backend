@@ -20,8 +20,12 @@ const userSchema = mongoose.Schema({
       ref: 'media'
     }
   ],
-  followers: Object,
-  PendingRequest: Object,
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'follower'
+    }
+  ],
   BlockedUser: Object,
   imageUrl: String
 })

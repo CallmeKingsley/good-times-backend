@@ -14,7 +14,9 @@ router.post('/setMusic', controller.setMusic)
 router.post('/setMusics', controller.setMusics)
 router.post('/emptyMedia', controller.emptyMedia)
 router.post('/delete', controller.deleteAccount)
-router.get('/getFollowerMedia', controller.getFollowerMedia)
-//router.delete('/todo/:id', controller.removeTodo)
+router.post('/addFollower', controller.addFollowerRequest)
+router.post('/acccepRequest', controller.accepterFollowerRequest)
+router.post('/rejectRequest', controller.rejectFollowerRequest)
+router.post('/getFollowerMedia', controller.getFollowerMedia)
 
 module.exports = router

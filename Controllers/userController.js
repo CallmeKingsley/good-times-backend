@@ -1,5 +1,6 @@
 const UserModel = require('../Models/userModel')
 const MediaModel = require('../Models/mediaModel')
+const Follower  = require('../Models/follower')
 const mongoose = require('mongoose')
 
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
         try {
           const userName = req.body.userName.trim().toLowerCase()
           const passWord = req.body.password.trim()
-          const user = await UserModel.findOne({ userName, passWord }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
+          const user = await UserModel.findOne({ userName, passWord }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
           if (user) {
             //await UserModel.findOneAndUpdate({ email: emailAddress }, { $set: { lastLoginDate: new Date() } })
             res.status(200).json({
@@ -46,7 +47,7 @@ module.exports = {
         }
     },
     getUsers: async (req, res) => {
-        const allUser = await UserModel.find({}).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
+        const allUser = await UserModel.find({}).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
         res.status(200).json({
            allUser
         })
@@ -54,7 +55,7 @@ module.exports = {
     getUser: async (req, res) => {
         const Id = req.params.Id.trim().toLowerCase()
         try{
-            const User = await UserModel.find({ _id: Id }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
+            const User = await UserModel.find({ _id: Id }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
             res.status(200).json({
                 User
             })
@@ -63,12 +64,89 @@ module.exports = {
         }
        
     },
-    searchUsers: async (req, res) => {
-        const name = req.body.searchName
-        console.log(req.body)
-        
+    addFollowerRequest: async (req, res) => {
         try{
-            const User = await UserModel.find({ userName: { $regex: name, $options: "i" }}).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
+            const followerId = req.body.followerId
+            const currentUserId = req.body.id
+
+            const User = await UserModel.find({ _id: currentUserId })
+            const followerUser = await UserModel.find({ _id: followerId })
+
+            const follower = new Follower({
+                _id: new mongoose.Types.ObjectId(),
+                followerImageURL: followerUser[0].imageUrl,
+                userImageURL: User[0].imageUrl,
+                userId: User[0]._id,
+                followerId:  followerUser[0]._id,
+                userName: User[0].userName,
+                followerName: followerUser[0].userName,
+                followerStatus: 'pending',
+                userStatus: 'request'
+            })
+
+            User[0].followers.push(follower)
+            followerUser[0].followers.push(follower)
+
+            await User[0].save()
+            await followerUser[0].save()
+            await follower.save()
+
+            res.status(200).json({
+                User
+            })
+
+        }catch(e){
+            console.log(e)
+        }
+
+    },
+
+    accepterFollowerRequest: async (req, res) => {
+        const followerId = req.body.followerId
+        try{
+            await Follower.findOneAndUpdate({ _id: followerId }, { $set: { followerStatus: 'accepted', userStatus: 'accepted' } }, (err, data) => {
+            if (!err) {
+                res.status(200).json({
+                  data
+                })
+              } else {
+                res.status(200).json({
+                  data
+                })
+              }
+        })
+        }catch(e){
+            console.log(e)
+            res.status(500).json({
+                error: e
+            })
+        }
+    },
+    rejectFollowerRequest: async (req, res) => {
+        const followerId = req.body.followerId
+        try{
+            await Follower.findOneAndUpdate({ _id: followerId }, { $set: { followerStatus: 'reject', userStatus: 'reject' } }, (err, data) => {
+            if (!err) {
+                res.status(200).json({
+                  data
+                })
+              } else {
+                res.status(200).json({
+                  data
+                })
+              }
+        })
+        }catch(e){
+            console.log(e)
+            res.status(500).json({
+                error: e
+            })
+        }
+    },
+    searchUsers: async (req, res) => {
+        const name = req.body.searchName 
+        try{
+            const User = await UserModel.find({ userName: { $regex: name, $options: "i" }}).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
             res.status(200).json({
                 User
             })
@@ -80,10 +158,10 @@ module.exports = {
     getFollowerMedia: async (req, res) => {
         try{
             const Id = req.body.Id.trim().toLowerCase()
-            const users = await UserModel.find({ _id: Id })
+            const users = await UserModel.find({ _id: Id }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
             res.status(200).json({
-             allMovies: users.moviesList,
-             allMusics: users.musicList
+             allMovies: users[0].moviesList,
+             allMusics: users[0].musicsList
             })
         } catch(e){
             res.status(500).json({
