@@ -6,10 +6,11 @@ const mongoose = require('mongoose')
 module.exports = {
     loginUser: async (req, res) => {
         try {
+           
           const userName = req.body.userName.trim().toLowerCase()
           const passWord = req.body.password.trim()
           const user = await UserModel.findOne({ userName, passWord }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
-          if (user) {
+           if (user) {
             //await UserModel.findOneAndUpdate({ email: emailAddress }, { $set: { lastLoginDate: new Date() } })
             res.status(200).json({
               user: user
@@ -30,7 +31,7 @@ module.exports = {
           const newUser = new UserModel({
             _id: new mongoose.Types.ObjectId(),
             emailAddress: req.body.email,
-            userName: req.body.userName,
+            userName: req.body.userName.trim().toLowerCase(),
             passWord: req.body.password
           })
           const user = await newUser.save()
