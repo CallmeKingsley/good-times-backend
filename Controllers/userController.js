@@ -8,11 +8,12 @@ module.exports = {
         try {
            
           const userName = req.body.userName.trim().toLowerCase()
-          const passWord = req.body.password.trim()
+          const passWord = req.body.password.trim()  
           const user = await UserModel.findOne({ userName, passWord }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
+          console.log(user._id)
            if (user) {
-            //await UserModel.findOneAndUpdate({ email: emailAddress }, { $set: { lastLoginDate: new Date() } })
-            res.status(200).json({
+             await UserModel.findOneAndUpdate({ _id : user._id }, { $set: { isLogOut: false} })           
+             res.status(200).json({
               user: user
             })
           }else{
@@ -171,12 +172,19 @@ module.exports = {
         }
     },
     logOut: async (req, res) => {
+        console.log(req.body)
         try{
-            const emailAddress = req.body.email.trim().toLowerCase()
-            await UserModel.findOneAndUpdate({ email: emailAddress }, { $set: { logOut: false} })
-            res.status(200).json({
-            user: user
+            const id = req.body.Id
+            await UserModel.findOneAndUpdate({ _id : id }, { $set: { isLogOut: true} },(err, data) => {
+                if(err){
+                    console.log(err)
+                }else{
+                    res.status(200).json({
+                    user: []
+                    })
+                }
             })
+            
         } catch(e){
             res.status(500).json({
                 error: e

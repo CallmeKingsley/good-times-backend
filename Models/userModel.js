@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   emailAddress: String,
   passWord: String,
   deleteAccount : { type: Boolean, default: false },
-  logOut: { type: Boolean, default: false },
+  isLogOut: { type: Boolean, default: false },
   moviesList: [
     {
       type: mongoose.Schema.Types.ObjectId,

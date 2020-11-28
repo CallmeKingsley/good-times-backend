@@ -14,6 +14,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/api', api)
 
-app.listen(3100, () => {
+const port = process.env.PORT || 2000
+
+app.listen(port, () => {
   console.log('connected')
 })
