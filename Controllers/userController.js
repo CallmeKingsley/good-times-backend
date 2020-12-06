@@ -380,5 +380,29 @@ module.exports = {
                 error: e
             })
        }
+    },
+    // Uploads file to DB
+    uploadPhoto: async (req, res) => {
+        
+        const Id = req.body.Id.trim().toLowerCase();
+        const imageUrl = req.body.Url;
+        try {
+            await UserModel.findByIdAndUpdate({_id: Id}, {$set: {imageUrl: imageUrl}}, (err, data) => {
+                console.log(err);
+                if (!err) {
+                    console.log("added to DB")
+                    res.status(200).json({
+                        data
+                    })
+                } else {
+                    console.log(err)
+                }
+            })
+        } catch(e) {
+            console.log(e)
+            res.status(500).json({
+                error: e
+            })
+        }
     }
 }

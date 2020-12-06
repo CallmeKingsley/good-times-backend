@@ -1,6 +1,7 @@
-const express = require('express')
-const router = express.Router()
-const controller = require('../Controllers').userController
+const express = require('express');
+const router = express.Router();
+const controller = require('../Controllers').userController;
+const config = require('../Config');
 
 router.post('/addUser', controller.addUser)
 router.get('/getUsers', controller.getUsers)
@@ -17,6 +18,7 @@ router.post('/delete', controller.deleteAccount)
 router.post('/addFollower', controller.addFollowerRequest)
 router.post('/acccepRequest', controller.accepterFollowerRequest)
 router.post('/rejectRequest', controller.rejectFollowerRequest)
-router.post('/getFollowerMedia', controller.getFollowerMedia)
+router.post('/getFollowerMedia', /*config.upload.single('') ,*/controller.getFollowerMedia)
+router.post('/upload', controller.uploadPhoto)
 
 module.exports = router
