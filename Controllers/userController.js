@@ -1,7 +1,19 @@
 const UserModel = require('../Models/userModel')
 const MediaModel = require('../Models/mediaModel')
 const Follower  = require('../Models/follower')
+const GridFsStorage = require('multer-gridfs-storage');
+const multer = require('multer')
 const mongoose = require('mongoose')
+const config = require('../Config');
+
+const Storage = multer.diskStorage({
+    destination(req, file, callback) {
+        callback(null, './images');
+    },
+    filename(req, file, callback) {
+        callback(null, `${file.fieldname}_${Date.now()}_${file.originalname}`);
+    },
+});
 
 module.exports = {
     loginUser: async (req, res) => {
@@ -383,26 +395,58 @@ module.exports = {
     },
     // Uploads file to DB
     uploadPhoto: async (req, res) => {
-        
-        const Id = req.body.Id.trim().toLowerCase();
-        const imageUrl = req.body.Url;
-        try {
-            await UserModel.findByIdAndUpdate({_id: Id}, {$set: {imageUrl: imageUrl}}, (err, data) => {
-                console.log(err);
-                if (!err) {
-                    console.log("added to DB")
-                    res.status(200).json({
-                        data
-                    })
-                } else {
-                    console.log(err)
-                }
-            })
-        } catch(e) {
-            console.log(e)
-            res.status(500).json({
-                error: e
-            })
-        }
+
+        let upload = multer({storage: Storage}).single('picture');
+        upload(req,res,(err) => {
+            console.log(req.body);
+            if (!req.file) {
+                return res.send('Please select an image to upload');
+              } else if (err instanceof multer.MulterError) {
+                return res.send(err);
+              } else if (err) {
+                return res.send(err);
+              }
+              // Display uploaded image for user validation
+              res.send(req.body.Url); // send uploaded image
+        })
+
+        // const Id = req.body.Id.trim().toLowerCase();
+        // const imageUrl = req.body.Url._parts[0][1].uri;
+        // const crypto = config.upload();
+        // console.log(crypto);
+        // const storage = new GridFsStorage({
+        //     url: 'mongodb://host:27017/database',
+        //     file: (req, file) => {
+        //         return {
+        //             filename: 'file_' + Date.now()
+        //         };
+        //     }
+        // });
+        // const upload = multer({ storage });
+        // console.log(upload);
+        // const hashImageUrl = 'file_' + Date.now() + imageUrl;
+        // console.log(hashImageUrl);
+        // try {
+            // console.log('file', req.file);
+            // console.log('body', req.body);
+            // res.status(200).json({
+            //     message: 'success!',
+            // });
+        //     await UserModel.findByIdAndUpdate({_id: Id}, {$set: {imageUrl: imageUrl}}, (err, data) => {
+        //         if (!err) {
+        //             console.log("added to DB")
+        //             res.status(200).json({
+        //                 data
+        //             })
+        //         } else {
+        //             console.log(err)
+        //         }
+        //     })
+        // } catch(e) {
+        //     console.log(e)
+        //     res.status(500).json({
+        //         error: e
+        //     })
+        // }
     }
 }

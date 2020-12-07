@@ -8,32 +8,13 @@ const mongoUri = "mongodb://good-times:Kingsley321@ds137139.mlab.com:37139/good-
 require('dotenv').config()
 
 // Init gfs
-let gfs;
-let conn = mongoose.createConnection(mongoUri);
-conn.once('open', () => {
-  // Init stream
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection('uploads');
-})
-
-const storage = new GridFsStorage({
-  url: mongoUri,
-  file: (req, file) => {
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
-        }
-        const filename = buf.toString('hex') + path.extname(file.originalname);
-        const fileInfo = {
-          filename: filename,
-          bucketName: 'uploads'
-        };
-        resolve(fileInfo);
-      });
-    });
-  }
-});
+// let gfs;
+// let conn = mongoose.createConnection(mongoUri);
+// conn.once('open', () => {
+//   // Init stream
+//   gfs = Grid(conn.db, mongoose.mongo);
+//   gfs.collection('uploads');
+// });
 
 module.exports = {
 
@@ -53,28 +34,28 @@ module.exports = {
     mongoose.set('useUnifiedTopology', true);
   },
   // Create storage engine
- storage () {
-  new GridFsStorage({
-    url: mongoUri,
-    file: (req, file) => {
-      return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
-          if (err) {
-            return reject(err);
-          }
-          const filename = buf.toString('hex') + path.extname(file.originalname);
-          const fileInfo = {
-            filename: filename,
-            bucketName: 'uploads'
-          };
-          resolve(fileInfo);
-        });
-      });
-    }
-  })
- },
-  upload () {
-    return multer({ storage })
-  }
+//  storage () {
+//   new GridFsStorage({
+//     url: mongoUri,
+//     file: (req, file) => {
+//       return new Promise((resolve, reject) => {
+//         crypto.randomBytes(16, (err, buf) => {
+//           if (err) {
+//             return reject(err);
+//           }
+//           const filename = buf.toString('hex') + path.extname(file.originalname);
+//           const fileInfo = {
+//             filename: filename,
+//             bucketName: 'uploads'
+//           };
+//           resolve(fileInfo);
+//         });
+//       });
+//     }
+//   })
+//  },
+//   upload () {
+//     return multer({ storage })
+//   }
 }
 
