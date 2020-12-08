@@ -18,5 +18,6 @@ router.post('/addFollower', controller.addFollowerRequest)
 router.post('/acccepRequest', controller.accepterFollowerRequest)
 router.post('/rejectRequest', controller.rejectFollowerRequest)
 router.post('/getFollowerMedia', controller.getFollowerMedia)
+router.post('/getAllMedia', controller.getAllMedia)
 
 module.exports = router

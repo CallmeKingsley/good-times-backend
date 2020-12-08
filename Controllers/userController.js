@@ -388,5 +388,19 @@ module.exports = {
                 error: e
             })
        }
+    },
+    getAllMedia: async (req, res) => {
+
+      try{
+        const allMedia = await MediaModel.find({})
+        res.status(200).json({
+            allMedia: allMedia
+        })
+      }catch (e){
+            console.log(e)
+            res.status(500).json({
+                error: e
+            })
+      }
     }
 }
