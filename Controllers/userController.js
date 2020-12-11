@@ -253,7 +253,7 @@ module.exports = {
             const movieData = new MediaModel ({
                 _id: new mongoose.Types.ObjectId(),
                 kind: data.kind,
-                TrackName: data.trackName,
+                trackName: data.trackName,
                 releaseDate: data.releaseDate,
                 artistName: data.artistName,
                 image : data.image,
