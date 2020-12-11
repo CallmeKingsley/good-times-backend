@@ -1,11 +1,10 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
-
 module.exports = {
 
   mongoDBConfig () {
     mongoose.connect(
-    'mongodb://good-times:Kingsley321@ds137139.mlab.com:37139/good-times?authSource=good-times&w=1',
+    "mongodb+srv://kingsley01:12345@cluster0.cgobi.mongodb.net/good-times?retryWrites=true&w=majority",
     { useNewUrlParser: true , useUnifiedTopology: true ,retryWrites: false }, (err) => {
           if (err) {
             console.log('something bad happened')
@@ -18,6 +17,5 @@ module.exports = {
     mongoose.set('useNewUrlParser', true);
     mongoose.set('useUnifiedTopology', true);
   }
-  
 }
 

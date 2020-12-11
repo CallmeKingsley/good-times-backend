@@ -9,10 +9,10 @@ module.exports = {
            
           const userName = req.body.userName.trim().toLowerCase()
           const passWord = req.body.password.trim()  
-          const user = await UserModel.findOne({ userName, passWord }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
+          const user = await UserModel.findOne({ userName, passWord,deleteAccount: false }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
           console.log(user._id)
            if (user) {
-             await UserModel.findOneAndUpdate({ _id : user._id }, { $set: { isLogOut: false} })           
+             await UserModel.findOneAndUpdate({ _id : user._id }, { $set: { isLogOut: false, lastSeen: new Date().getTime()} })           
              res.status(200).json({
               user: user
             })
@@ -33,7 +33,8 @@ module.exports = {
             _id: new mongoose.Types.ObjectId(),
             emailAddress: req.body.email,
             userName: req.body.userName.trim().toLowerCase(),
-            passWord: req.body.password
+            passWord: req.body.password,
+            lastSeen: new Date().getTime()
           })
           const user = await newUser.save()
           if (user) {
@@ -49,7 +50,7 @@ module.exports = {
         }
     },
     getUsers: async (req, res) => {
-        const allUser = await UserModel.find({}).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
+        const allUser = await UserModel.find({deleteAccount: false}).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
         res.status(200).json({
            allUser
         })
@@ -57,6 +58,7 @@ module.exports = {
     getUser: async (req, res) => {
         const Id = req.params.Id.trim().toLowerCase()
         try{
+            await UserModel.findOneAndUpdate({ _id: Id }, { $set: { lastSeen : new Date().getTime()} })
             const User = await UserModel.find({ _id: Id }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
             res.status(200).json({
                 User
@@ -175,7 +177,7 @@ module.exports = {
         console.log(req.body)
         try{
             const id = req.body.Id
-            await UserModel.findOneAndUpdate({ _id : id }, { $set: { isLogOut: true} },(err, data) => {
+            await UserModel.findOneAndUpdate({ _id : id }, { $set: { isLogOut: true,lastSeen : new Date().getTime()} },(err, data) => {
                 if(err){
                     console.log(err)
                 }else{
@@ -194,7 +196,7 @@ module.exports = {
     deleteAccount: async (req, res) => {
         try{
             const emailAddress = req.body.email.trim().toLowerCase()
-            await UserModel.findOneAndUpdate({ email: emailAddress }, { $set: { deleteAccount: true} })
+            await UserModel.findOneAndUpdate({ email: emailAddress }, { $set: { deleteAccount: true,lastSeen : new Date().getTime()} })
             res.status(200).json({
             user: user
             })

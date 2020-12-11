@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
   passWord: String,
   deleteAccount : { type: Boolean, default: false },
   isLogOut: { type: Boolean, default: false },
+  lastSeen: { type: String, default: new Date().getTime() },
   moviesList: [
     {
       type: mongoose.Schema.Types.ObjectId,
