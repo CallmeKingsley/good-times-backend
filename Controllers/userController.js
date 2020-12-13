@@ -2,6 +2,7 @@ const UserModel = require('../Models/userModel')
 const MediaModel = require('../Models/mediaModel')
 const Follower = require('../Models/follower')
 const Feedback = require('../Models/feedback')
+const nodemailer = require('nodemailer')
 const mongoose = require('mongoose')
 
 module.exports = {
@@ -66,6 +67,54 @@ module.exports = {
     } catch (e) {
       console.log(e)
     }
+  },
+  forgetPassword: async (req, res) =>{
+
+    try {
+  
+      const Email = req.body.email
+      const user = await UserModel.findOne({ emailAddress: Email })
+      if (user) {
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.mailtrap.io',
+          port: 2525,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: "f40a3caa486af3",
+            pass: "4f348daeaf6e49"
+          }
+        })
+        var str = new String(process.env.FrontEnd_URL + '/forgotPw/' + user._id)
+        var URL = process.env.FrontEnd_URL + '/forgotPw/' + user._id
+        var Link = str.link(URL)
+
+        const info = await transporter.sendMail({
+          from: process.env.Company_Email, // sender address
+          to: Email, // list of receivers
+          subject: 'futureCompany reset password request ✔', // Subject line
+          html: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.<br>' +
+          'Please click on the following link, or paste this into your browser to complete the process:<br>' + Link +
+          '<br><br>If you did not request this, please ignore this email and your password will remain unchanged.<br>'
+        }, errors => {
+          console.log(errors)
+          if (errors) {
+      
+            res.status(500).json({
+              message: errors
+            })
+          }else{
+            res.status(200).json({
+              message: 'sent'
+            })
+          }
+        })
+      }
+    } catch (e) {
+      res.status(500).json({
+        user: e,
+        message: 'could\'t add user'
+      })
+    }  
   },
   addFollowerRequest: async (req, res) => {
     try {
@@ -161,7 +210,9 @@ module.exports = {
       const users = await UserModel.find({ _id: Id }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' })
       res.status(200).json({
         allMovies: users[0].moviesList,
-        allMusics: users[0].musicsList
+        allMusics: users[0].musicsList,
+        userName: users[0].userName,
+        userBio: users[0].bio
       })
     } catch (e) {
       res.status(500).json({
@@ -419,7 +470,7 @@ module.exports = {
 
   changeEmailAddress: async (req, res) => {
     const Id = req.body.Id.trim().toLowerCase()
-    const newEmail = req.body.newEmail
+    const newEmail = req.body.newEmail.trim().toLowerCase()
     try {
       await UserModel.findOneAndUpdate({ _id: Id }, { $set: { emailAddress: newEmail } }, (err) => {
         if (err) {
@@ -433,7 +484,7 @@ module.exports = {
     } catch (e) {
       console.log(e)
       res.status(500).json({
-        error: e
+      error: e
       })
     }
   },
@@ -479,7 +530,7 @@ module.exports = {
     }
   },
   sendMessageToUs: async (req, res) => {
-    const userId = req.body.userId.trim().toLowerCase()
+    const userId = req.body.Id.trim().toLowerCase()
     const message = req.body.message
     try {
       const feedback = new Feedback({

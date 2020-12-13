@@ -30,7 +30,6 @@ const userSchema = mongoose.Schema({
     }
   ],
   BlockedUser: Object,
-  imageUrl: String
+  imageUrl: { type: String, default: 'https://simple-menu.s3.amazonaws.com/uploads%2Fimageccccccdddddddcdc.jpg' }
 })
-
 module.exports = mongoose.model('userSchema', userSchema)
