@@ -426,7 +426,7 @@ module.exports = {
           console.log(err)
         } else {
           res.status(200).json({
-            user: 'email Chaanged'
+            user: 'email Changed'
           })
         }
       })
@@ -447,7 +447,7 @@ module.exports = {
           console.log(err)
         } else {
           res.status(200).json({
-            user: 'email Chaanged'
+            user: 'password Changed'
           })
         }
       })
@@ -467,7 +467,7 @@ module.exports = {
           console.log(err)
         } else {
           res.status(200).json({
-            user: 'email Chaanged'
+            user: 'notification Changed'
           })
         }
       })
@@ -513,7 +513,7 @@ module.exports = {
           console.log(err)
         } else {
           res.status(200).json({
-            user: 'email Chaanged'
+            user: 'userinfo Changed'
           })
         }
       })
