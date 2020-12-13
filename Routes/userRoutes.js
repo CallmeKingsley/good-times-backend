@@ -19,5 +19,12 @@ router.post('/acccepRequest', controller.accepterFollowerRequest)
 router.post('/rejectRequest', controller.rejectFollowerRequest)
 router.post('/getFollowerMedia', controller.getFollowerMedia)
 router.post('/getAllMedia', controller.getAllMedia)
+router.post('/deleteMedia', controller.deleteMedia)
+router.post('/changeEmailAddress', controller.changeEmailAddress)
+router.post('/changePassword', controller.changePassword)
+router.post('/changeNotification', controller.changeNotification)
+router.post('/messageUs', controller.sendMessageToUs)
+router.post('/changeUserInfo', controller.changeUserInfo)
+
 
 module.exports = router

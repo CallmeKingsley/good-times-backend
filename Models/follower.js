@@ -9,7 +9,7 @@ const followerSchema = mongoose.Schema({
   userName: String,
   followerName: String,
   followerStatus: String,
-  userStatus:String
+  userStatus: String
 })
 
 module.exports = mongoose.model('follower', followerSchema)

@@ -6,16 +6,18 @@ const userSchema = mongoose.Schema({
   kind: String,
   emailAddress: String,
   passWord: String,
-  deleteAccount : { type: Boolean, default: false },
+  deleteAccount: { type: Boolean, default: false },
   isLogOut: { type: Boolean, default: false },
   lastSeen: { type: String, default: new Date().getTime() },
+  bio: String,
+  sendNotifications: { type: Boolean, default: true },
   moviesList: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'media'
     }
   ],
-  musicsList:[
+  musicsList: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'media'

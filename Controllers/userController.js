@@ -1,6 +1,7 @@
 const UserModel = require('../Models/userModel')
 const MediaModel = require('../Models/mediaModel')
 const Follower  = require('../Models/follower')
+const Feedback  = require('../Models/feedback')
 const mongoose = require('mongoose')
 
 module.exports = {
@@ -404,5 +405,133 @@ module.exports = {
                 error: e
             })
       }
-    }
+    },
+
+    deleteMedia: async (req, res )=>{
+      const Id = req.body.Id.trim().toLowerCase()
+       try{
+        await MediaModel.findOneAndUpdate({ _id : Id }, { $set: {isDeleted: true} },(err) => {
+            if(err){
+                console.log(err)
+            }else{
+                res.status(200).json({
+                mediaStatus: 'deleted'
+                })
+            }
+        })
+       }catch(e){
+        console.log(e)
+        res.status(500).json({
+            error: e
+        })
+       }
+    },
+
+    changeEmailAddress: async (req, res )=>{
+        const Id = req.body.Id.trim().toLowerCase()
+        const newEmail = req.body.newEmail
+         try{
+          await UserModel.findOneAndUpdate({ _id : Id }, { $set: {emailAddress: newEmail} },(err) => {
+              if(err){
+                  console.log(err)
+              }else{
+                  res.status(200).json({
+                  user: 'email Chaanged'
+                  })
+              }
+          })
+         }catch(e){
+          console.log(e)
+          res.status(500).json({
+              error: e
+          })
+         }
+    },
+
+    changePassword: async (req, res )=>{
+        const Id = req.body.Id.trim().toLowerCase()
+        const newPassword = req.body.newPassword
+         try{
+          await UserModel.findOneAndUpdate({ _id : Id }, { $set: {passWord: newPassword} },(err) => {
+              if(err){
+                  console.log(err)
+              }else{
+                  res.status(200).json({
+                  user: 'email Chaanged'
+                  })
+              }
+          })
+         }catch(e){
+          console.log(e)
+          res.status(500).json({
+              error: e
+          })
+         }
+    },
+    changeNotification: async (req, res )=>{
+        const Id = req.body.Id.trim().toLowerCase()
+        const newStatus = req.body.newStatus
+         try{
+          await UserModel.findOneAndUpdate({ _id : Id }, { $set: {sendNotifications: newStatus} },(err) => {
+              if(err){
+                  console.log(err)
+              }else{
+                  res.status(200).json({
+                  user: 'email Chaanged'
+                  })
+              }
+          })
+         }catch(e){
+          console.log(e)
+          res.status(500).json({
+              error: e
+          })
+         }
+    },
+    sendMessageToUs: async (req, res )=>{
+        const userId = req.body.userId.trim().toLowerCase()
+        const message = req.body.message
+         try{
+            const feedback = new Feedback({
+                _id: new mongoose.Types.ObjectId(),
+                message: message,
+                creator: userId
+            })
+
+            const updated = await feedback.save()
+            if(updated){
+                res.status(200).json({
+                    user: 'message sent'
+                })
+            }
+         }catch(e){
+          console.log(e)
+          res.status(500).json({
+              error: e
+          })
+         }
+    },
+    changeUserInfo: async (req, res )=>{
+        const Id = req.body.Id.trim().toLowerCase()
+        const newUserName = req.body.newUserName
+        const newBio = req.body.newBio
+        const newImage  = req.body.newProfileImage
+
+        try{
+          await UserModel.findOneAndUpdate({ _id : Id }, { $set: {userName: newUserName,bio : newBio,imageUrl: newImage } },(err) => {
+              if(err){
+                  console.log(err)
+              }else{
+                  res.status(200).json({
+                  user: 'email Chaanged'
+                  })
+              }
+          })
+         }catch(e){
+          console.log(e)
+          res.status(500).json({
+              error: e
+          })
+         }
+    },
 }

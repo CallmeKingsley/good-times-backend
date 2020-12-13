@@ -12,7 +12,8 @@ const mediaSchema = mongoose.Schema({
   trackId: Number,
   collectionName: String,
   ranking: Number,
-  creator:{
+  isDeleted: { type: Boolean, default: false },
+  creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'userSchema'
   }
