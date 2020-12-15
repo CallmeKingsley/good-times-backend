@@ -213,7 +213,8 @@ module.exports = {
         allMovies: users[0].moviesList,
         allMusics: users[0].musicsList,
         userName: users[0].userName,
-        userBio: users[0].bio
+        userBio: users[0].bio,
+        userImage: users[0].imageUrl
       })
     } catch (e) {
       res.status(500).json({
