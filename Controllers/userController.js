@@ -62,6 +62,8 @@ module.exports = {
     try {
       await UserModel.findOneAndUpdate({ _id: Id }, { $set: { lastSeen: new Date().getTime() } })
       const User = await UserModel.find({ _id: Id }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
+      await Follower.updateMany({followerId: Id}, {"$set":{followerLastSeen: new Date().getTime(),followerImageURL: User.imageUrl,followerName: User.userName }})
+      await Follower.updateMany({userId: Id}, {"$set":{userLastSeen: new Date().getTime(),userImageURL: User.imageUrl, userName:User.userName }})
       res.status(200).json({
         User
       })
@@ -223,7 +225,6 @@ module.exports = {
     }
   },
   logOut: async (req, res) => {
-    console.log(req.body)
     try {
       const id = req.body.Id
       await UserModel.findOneAndUpdate({ _id: id }, { $set: { isLogOut: true, lastSeen: new Date().getTime() } }, (err, data) => {
@@ -235,6 +236,8 @@ module.exports = {
           })
         }
       })
+      await Follower.updateMany({followerId: id}, {"$set":{followerLastSeen: new Date().getTime() }})
+      await Follower.updateMany({userId: id}, {"$set":{userLastSeen: new Date().getTime() }})
     } catch (e) {
       res.status(500).json({
         error: e

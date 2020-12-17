@@ -9,7 +9,9 @@ const followerSchema = mongoose.Schema({
   userName: String,
   followerName: String,
   followerStatus: String,
-  userStatus: String
+  userStatus: String,
+  userLastSeen: { type: String, default: new Date().getTime() },
+  followerLastSeen: { type: String, default: new Date().getTime() },
 })
 
 module.exports = mongoose.model('follower', followerSchema)
