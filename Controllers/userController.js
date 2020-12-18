@@ -62,8 +62,8 @@ module.exports = {
     try {
       await UserModel.findOneAndUpdate({ _id: Id }, { $set: { lastSeen: new Date().getTime() } })
       const User = await UserModel.find({ _id: Id }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
-      await Follower.updateMany({followerId: Id}, {"$set":{followerLastSeen: new Date().getTime(),followerImageURL: User.imageUrl,followerName: User.userName }})
-      await Follower.updateMany({userId: Id}, {"$set":{userLastSeen: new Date().getTime(),userImageURL: User.imageUrl, userName:User.userName }})
+      await Follower.updateMany({followerId: Id}, {"$set":{followerLastSeen: new Date().getTime(),followerImageURL: User[0].imageUrl,followerName: User[0].userName }})
+      await Follower.updateMany({userId: Id}, {"$set":{userLastSeen: new Date().getTime(),userImageURL: User[0].imageUrl, userName:User[0].userName }})
       res.status(200).json({
         User
       })
