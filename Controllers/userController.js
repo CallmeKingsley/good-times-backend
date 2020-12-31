@@ -353,7 +353,7 @@ module.exports = {
         const movieData = {
           _id: new mongoose.Types.ObjectId(),
           kind: data.kind,
-          TrackName: data.trackName,
+          trackName: data.trackName,
           releaseDate: data.releaseDate,
           artistName: data.artistName,
           image: data.image,
@@ -362,6 +362,7 @@ module.exports = {
           trackId: data.trackId,
           collectionName: data.collectionName,
           ranking: data.ranking,
+          isDeleted: data.isDeleted,
           creator: userInfo
         }
         await userInfo.musicsList.push(movieData)
@@ -395,7 +396,7 @@ module.exports = {
         const movieData = {
           _id: new mongoose.Types.ObjectId(),
           kind: data.kind,
-          TrackName: data.trackName,
+          trackName: data.trackName,
           releaseDate: data.releaseDate,
           artistName: data.artistName,
           image: data.image,
@@ -404,6 +405,7 @@ module.exports = {
           trackId: data.trackId,
           collectionName: data.collectionName,
           ranking: data.ranking,
+          isDeleted: data.isDeleted,
           creator: userInfo
         }
 
