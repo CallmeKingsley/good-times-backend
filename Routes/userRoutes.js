@@ -26,5 +26,6 @@ router.post('/changeNotification', controller.changeNotification)
 router.post('/messageUs', controller.sendMessageToUs)
 router.post('/changeUserInfo', controller.changeUserInfo)
 router.post('/forgetPassword', controller.forgetPassword)
+router.post('/getUserByEmail', controller.getUserByEmail)
 
 module.exports = router

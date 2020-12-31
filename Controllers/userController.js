@@ -57,6 +57,13 @@ module.exports = {
       allUser
     })
   },
+  getUserByEmail: async (req, res) => {
+    const email = req.body.email
+    const allUser = await UserModel.findOne({ deleteAccount: false, emailAddress: email }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
+    res.status(200).json({
+      allUser
+    })
+  },
   getUser: async (req, res) => {
     const Id = req.params.Id.trim().toLowerCase()
     try {
