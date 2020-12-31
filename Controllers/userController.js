@@ -8,9 +8,9 @@ const mongoose = require('mongoose')
 module.exports = {
   loginUser: async (req, res) => {
     try {
-      const userName = req.body.userName.trim().toLowerCase()
+      const emailAddress = req.body.userName.trim().toLowerCase()
       const passWord = req.body.password.trim()
-      const user = await UserModel.findOne({ userName, passWord, deleteAccount: false }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
+      const user = await UserModel.findOne({ emailAddress, passWord, deleteAccount: false }).populate({ path: 'moviesList', model: 'media' }).populate({ path: 'musicsList', model: 'media' }).populate({ path: 'followers', model: 'follower' })
       
       if (user) {
         await UserModel.findOneAndUpdate({ _id: user._id }, { $set: { isLogOut: false, lastSeen: new Date().getTime() } })
